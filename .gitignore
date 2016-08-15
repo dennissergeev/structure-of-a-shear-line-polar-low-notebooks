@@ -1,0 +1,5 @@
+*.pyc
+.ipynb*
+Untitled*ipynb
+tmp*
+stash.csv
