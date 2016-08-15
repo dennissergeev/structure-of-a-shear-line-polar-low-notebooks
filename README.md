@@ -1,2 +1,2 @@
-# structure_of_a_shear_line_polar_low_notebooks
+# Structure of a shear-line polar low
 Jupyter Notebooks used to generate figures for my paper
