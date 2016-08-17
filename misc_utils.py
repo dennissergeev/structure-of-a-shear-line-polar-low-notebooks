@@ -148,20 +148,24 @@ def generic_cross_sect(xgrid, zz, dist, data_list_of_dict):
     return cross
 
 
-def ds_regz(zz, ds_id, data, coordname, varname):
+def ds_regz(zz, ds_id, data, coordname, varname, filt_kw):
     j = 0
     regz = np.zeros((len(zz), len(ds_id)))
     for i in ds_id:
+        arr = getattr(data[i], varname).fil[:]
+        if isinstance(filt_kw, dict):
+            arr = blf(arr, **filt_kw)
         regz[:, j] = scinter.interp1d(getattr(data[i], coordname).fil[:],
-                                      getattr(data[i], varname).fil[:],
+                                      arr,
                                       bounds_error=False)(zz)
         j += 1
 
     return regz
 
 
-def ds_cross_sect(xgrid, zz, leg_dist, ds_id, data, coordname, varname):
-    regz = ds_regz(zz, ds_id, data, coordname, varname)
+def ds_cross_sect(xgrid, zz, leg_dist, ds_id, data, coordname, varname,
+                  filt_kw):
+    regz = ds_regz(zz, ds_id, data, coordname, varname, filt_kw)
 
     cross = np.zeros((len(zz), len(xgrid)))
 
