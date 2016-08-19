@@ -45,6 +45,7 @@ ascat_25km_flist = _sg(opj(ascat_dir, '25.0km', '*.nc'))
 cloudsat_dir = opj(homedir, 'satellite', 'CLOUDSAT')
 cloudsat_flist = _sg(opj(cloudsat_dir, '*.h5'))
 cloudsat_geoprof_flist = _sg(opj(cloudsat_dir, '*CS_2B-GEOPROF_GRANULE*.h5'))
+cloudsat_cwc_flist = _sg(opj(cloudsat_dir, '*CS_2B-CWC-RO_GRANULE*.h5'))
 
 #
 # In-situ observations: dropsondes and on-board aircraft probes
