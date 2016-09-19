@@ -346,9 +346,9 @@ def plot_n_zprofiles(varlist, fs=None, filt_keys=dict(sample_rate=1., cutoff=1/1
         lnkw_filt = []
         for i, idic in enumerate(ytup[:-1]): # The last ytup is a dict with plot parameters
             lnkw_data.append(dict(color=idic['c'] if 'c' in idic else pp.cvec[i], 
-                                  linewidth=idic['lw'] if 'lw' in idic else 0.5, alpha=0.6))
+                                  linewidth=idic['lw'] if 'lw' in idic else 1.5, alpha=0.6))
             lnkw_filt.append(dict(color=idic['c'] if 'c' in idic else pp.cvec[i], 
-                                  linewidth=idic['lw'] if 'lw' in idic else 1))
+                                  linewidth=idic['lw'] if 'lw' in idic else 2.5))
         try:
             if ytup[-1]['plttype'].lower() == 'barbs':
                 fake_handles = []
@@ -358,7 +358,6 @@ def plot_n_zprofiles(varlist, fs=None, filt_keys=dict(sample_rate=1., cutoff=1/1
                     axs[n].barbs(idic['data'][0][::s], idic['yax'][::s],
                           misc.blf(idic['data'][1], **filt_keys)[::s],
                           misc.blf(idic['data'][2], **filt_keys)[::s],
-                          length=4,
                           label=idic['label'] if 'label' in idic else 'data{}'.format(0),
                           barb_increments=pp.barb_incr,
                           color=lnkw_filt[i]['color'])
@@ -390,19 +389,22 @@ def plot_n_zprofiles(varlist, fs=None, filt_keys=dict(sample_rate=1., cutoff=1/1
             if legend:
                 axs[n].legend(loc=1)
 
-        axs[n].set_title(ytup[-1]['ttl'])#, fontsize=20, color=pp.almost_black)
-        axs[n].set_xlabel(ytup[-1]['xlab'])#, fontsize=20)
+        axs[n].set_title(ytup[-1]['ttl'], fontsize=20)
+        axs[n].set_xlabel(ytup[-1]['xlab'], fontsize=20)
         axs[n].set_ylim(0, 6) #np.nanmin(hgt), np.nanmax(hgt))
-        axs[n].grid('on')            
+        axs[n].grid('on')
+        axs[n].tick_params(axis='both', which='major', labelsize=20)
             
-    axs[0].set_ylabel('Height, km')#,fontsize=16)
+    axs[0].set_ylabel('Height, km', fontsize=20)
      
     fig.tight_layout()
         
     return fig, axs
 
         
-def plot_n_tseries(varlist, time=None, lon=None, lat=None, add_dist=False, llstep=60, segments=None, fs=None, filt_keys=dict(sample_rate=1., cutoff=1/100., order=6)):
+def plot_n_tseries(varlist,
+                   time=None, lon=None, lat=None, add_dist=False, llstep=60, segments=None,
+                   fs=None, filt_keys=dict(sample_rate=1., cutoff=1/100., order=6)):
     
     if fs is None:
         fs = (27,(len(varlist))*3)
@@ -411,18 +413,14 @@ def plot_n_tseries(varlist, time=None, lon=None, lat=None, add_dist=False, llste
     if len(varlist) == 1:
         axs = [axs]
     
-    #if not isinstance(mdt, np.ndarray):
-    #    mdt = mpl.dates.date2num(mdt)
-    #tfmt = mpl.dates.DateFormatter('%H:%M')
-    
     for n, ytup in enumerate(varlist):
         ax = axs[n]
         
         lnkw_data = []
         lnkw_filt = []
         for i, idic in enumerate(ytup[:-1]): # The last ytup is a dict with plot parameters
-            lnkw_data.append(dict(color=idic['c'] if 'c' in idic else pp.cvec[i], linewidth=0.5, alpha=0.6))
-            lnkw_filt.append(dict(color=idic['c'] if 'c' in idic else pp.cvec[i], linewidth=1))
+            lnkw_data.append(dict(color=idic['c'] if 'c' in idic else pp.cvec[i], linewidth=1., alpha=0.6))
+            lnkw_filt.append(dict(color=idic['c'] if 'c' in idic else pp.cvec[i], linewidth=2.))
         try:
             if ytup[-1]['plttype'].lower() == 'barbs':
                 fake_handles = []
@@ -435,7 +433,6 @@ def plot_n_tseries(varlist, time=None, lon=None, lat=None, add_dist=False, llste
                           misc.blf(idic['data'][2], **filt_keys)[::s],
                           label=idic['label'] if 'label' in idic else 'data{}'.format(0),
                           barb_increments=pp.barb_incr,
-                          length=6,
                           color=lnkw_filt[i]['color'])
                     fake_handles.append(ax.plot([], [],
                                                 color=lnkw_filt[i]['color'])[0])
@@ -458,9 +455,10 @@ def plot_n_tseries(varlist, time=None, lon=None, lat=None, add_dist=False, llste
 
             #ax.legend(loc=1)
     
-        ax.set_title(ytup[-1]['ttl'])#, fontsize=20, color=pp.almost_black)
-        ax.set_ylabel(ytup[-1]['ylab'])#, fontsize=20)
-        ax.get_yaxis().set_label_coords(-0.06,0.5)
+        ax.set_title(ytup[-1]['ttl'], fontsize=18)
+        ax.set_ylabel(ytup[-1]['ylab'], fontsize=18)
+        ax.tick_params(axis='both', which='major', labelsize=14)
+        ax.get_yaxis().set_label_coords(-0.06, 0.5)
         ax.set_xlim(mdt[0],mdt[-1])
         axs[n].grid('on')
         if 'pres' in ytup[-1]['ttl'].lower():
@@ -468,7 +466,7 @@ def plot_n_tseries(varlist, time=None, lon=None, lat=None, add_dist=False, llste
 
         ax.xaxis.set_visible(False)
         ax.spines['bottom'].set_color('w')
-        _ax = add_xaxis_below(ax, np.linspace(0,1,len(time[::llstep])), [], 0)
+        _ax = add_xaxis_below(ax, np.linspace(0, 1, len(time[::llstep])), [], 0)
 
     # Additional axes
     if time is not None:
@@ -495,83 +493,13 @@ def plot_n_tseries(varlist, time=None, lon=None, lat=None, add_dist=False, llste
                             *np.cos(np.radians(lat[i]))*np.cos(np.radians(lon[i-1]-lon[i]))
                                                        )
                             )
-            newax_dist = add_xaxis_below(ax, llticks, ['{0:3.0f} km'.format(i) for i in np.cumsum(dist)], 60)
+            newax_dist = add_xaxis_below(ax, llticks,
+                                         ['{0:3.0f} km'.format(i) for i in np.cumsum(dist)], 60)
 
     if segments is not None:
         add_hrow(ax, **segments)
 
     return fig, axs
-
-
-def plot_tseries_ll(dt, ytup, lon=None, lat=None, add_dist=False, in_ax=None, xlab='Time', ylab=''):
-
-    if in_ax is None:
-        fig, ax = plt.subplots()
-    else:
-        ax = in_ax
-
-    mdt = mpl.dates.date2num(dt)
-    tfmt = mpl.dates.DateFormatter('%H:%M')
-
-    for i, ydict in enumerate(ytup):
-        ax.plot(mdt, ydict['data'],
-                color=ydict['c'] if 'c' in ydict else pp.cvec[i],
-                marker=ydict['m'] if 'm' in ydict else pp.msty[i+1],# msty[0] = ''
-                mfc=ydict['c'] if 'c' in ydict else pp.cvec[i],
-                mec=ydict['c'] if 'c' in ydict else pp.cvec[i],
-                linewidth=ydict['lnw'] if 'lnw' in ydict else pp.lwdth,
-                linestyle=ydict['lns'] if 'lns' in ydict else pp.lsty,
-                label=ydict['label'] if 'label' in ydict else 'data{}'.format(i))
-
-    plt.legend(loc=1)
-
-    ax.set_xlim(mdt[0],mdt[-1])
-
-    #ax.xaxis.set_major_locator(mpl.dates.MinuteLocator(interval=2))
-    ax.xaxis.set_ticks(mdt)
-    ax.xaxis.set_major_formatter(tfmt)
-    #ax.tick_params(axis='both', which='major', labelsize=16)
-    plt.xticks(rotation='horizontal')
-    plt.subplots_adjust(bottom=.3)
-
-    ax.set_ylabel(ylab)#,fontsize=20)
-    ax.get_yaxis().set_label_coords(-0.05,0.5)
-    ax.set_xlabel(xlab)#,fontsize=20)
-
-    if lon is not None and lat is not None:
-        axticks = ax.get_xticks()
-        xticks01 = (axticks-axticks[0])/(axticks[-1]-axticks[0])
-        xinds = slice(1,None,2)
-
-        newaxs = [([LL.Latitude(i).to_string("d%$^\circ$%m%'%H") for i in lat[xinds]], 50),
-                  ([LL.Longitude(i).to_string("d%$^\circ$%m%'%H") for i in lon[xinds]], 75)]
-
-        if add_dist:
-            dist = [0]
-            for i in range(1,len(lon)):
-                dist.append(
-                            met.r_earth/1000.*np.arccos( \
-                            np.sin(np.radians(lat[i-1]))*np.sin(np.radians(lat[i])) + \
-                            np.cos(np.radians(lat[i-1])) \
-                            *np.cos(np.radians(lat[i]))*np.cos(np.radians(lon[i-1]-lon[i]))
-                                                       )
-                            )
-            newaxs.append((['{0:3.0f} km'.format(i) for i in np.cumsum(dist)[xinds]], 110))
-
-        for iax in newaxs:
-            newax = ax.twiny()
-            newax.set_xticks(xticks01[xinds])
-            newax.set_xticklabels(iax[0])
-            newax.set_frame_on(True)
-            newax.patch.set_visible(False)
-            newax.xaxis.set_ticks_position('bottom')
-            newax.xaxis.set_label_position('bottom')
-            newax.spines['bottom'].set_position(('outward', iax[1]))
-            #newax.tick_params(axis='both', which='major', labelsize=16)
-            newax.grid('off')
-
-    if in_ax is None:
-        return fig, ax
 
 
 def add_xaxis_below(parent_ax,xtick_array,xlab_array,shift_down):
