@@ -7,4 +7,4 @@ The figures are stored in the [./figures](.figures) directory. Data is available
 
 Any comments and PRs are welcome.
 
-LICENSE: [MIT](LICENCE)
+LICENSE: [MIT](LICENSE)
